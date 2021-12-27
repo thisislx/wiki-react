@@ -1,0 +1,41 @@
+@import '../index.less';
+
+.wrap {
+ > div:first-child {
+  margin-bottom: 0;
+ }
+}
+
+.tab-pane {
+ position: relative;
+}
+
+.tab-spin {
+ position  : absolute;
+ width     : 100%;
+ text-align: center;
+}
+
+.top-filter {
+ display        : flex;
+ flex-wrap      : wrap;
+ justify-content: space-between;
+
+ &:global {
+   >.ant-divider {
+     display: none;
+   }
+
+   >form .ant-form-item {
+     display: flex;
+   }
+ }
+
+ >form {
+   flex-grow: 1;
+
+   >div {
+     width: 20rem;
+   }
+ }
+}

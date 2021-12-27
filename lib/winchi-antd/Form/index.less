@@ -1,0 +1,56 @@
+@import '../index.less';
+@import '~antd/lib/style/themes/default.less';
+
+.form {
+  .scroll-bar();
+  display: flex;
+  flex-wrap: wrap;
+  gap: @margin-sm;
+
+  max-height: 70vh;
+  overflow-y: auto;
+  transition: 0.25s linear;
+}
+
+.title {
+  font-size: 1.4rem;
+}
+
+.footer {
+  display: flex;
+  gap: @margin-sm;
+  justify-content: space-between;
+
+  @media (max-width: 600px) {
+    justify-content: flex-end;
+    width: 100%;
+  }
+}
+
+.form-ele {
+  width: 48%;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+.divider {
+  margin: @margin-xs;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  place-content: center;
+}
+
+.current-step {
+  color: @primary-color;
+  font-size: 1.3em;
+}
+
+.header-title {
+  font-size: 1.2em;
+  text-align: center;
+}

@@ -1,0 +1,38 @@
+@import '~antd/lib/style/themes/default.less';
+
+.pointer {
+  cursor: pointer;
+}
+
+.menu-min-width {
+  min-width: 4rem;
+  padding: 0;
+}
+
+.scroll-bar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(255, 255, 255);
+  }
+
+  /*定义滚动条轨道 内阴影+圆角*/
+  &::-webkit-scrollbar-track {
+    background-color: rgba(160, 160, 160, 0.1);
+    border-radius: 8px;
+    box-shadow: inset 0 0 8px rgba(160, 160, 160, 0.3);
+  }
+
+  /*定义滑块 内阴影+圆角*/
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(160, 160, 160, 0.4);
+    border-radius: 8px;
+    box-shadow: inset 0 0 8px rgba(160, 160, 160, 0.3);
+  }
+}
+
+.form-item-srcoll {
+  .scroll-bar();
+  height: 29rem;
+  overflow-y: auto;
+}

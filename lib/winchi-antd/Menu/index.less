@@ -1,0 +1,28 @@
+@import '../index.less';
+
+.wrap {
+  > div:first-child {
+    .scroll-bar();
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 3rem;
+  margin: 0;
+  font-size: 1rem;
+}
+
+.divider {
+  margin: 0;
+
+  &:last-child {
+    position: absolute;
+    bottom: 0;
+  }
+}

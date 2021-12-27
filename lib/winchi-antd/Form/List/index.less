@@ -1,0 +1,48 @@
+@import '../index.less';
+
+.list {
+  .form-ele();
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  > main {
+    .scroll-bar();
+
+    width: 100%;
+    max-height: 30rem;
+    padding: @padding-sm @padding-md;
+    overflow-y: auto;
+    border: 1px solid @border-color-base;
+    border-radius: @border-radius-base;
+
+    :global {
+      .ant-row.ant-form-item {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.space {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: @margin-xs;
+
+  &:nth-last-child(2) {
+    border-bottom: none;
+  }
+
+  > div {
+    &:last-child {
+      transform: translateY(70%);
+    }
+  }
+}
+
+.add {
+  float: right;
+  margin: @margin-sm 0;
+}
