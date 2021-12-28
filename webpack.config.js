@@ -151,7 +151,6 @@ var getDefaultConfig = function (isProduction) {
                 cssRules,
                 {
                     test: /\.less$/,
-                    // exclude: _nodeModulesReg,
                     use: __spreadArray(__spreadArray([], cssRules.use), [
                         {
                             loader: 'less-loader',

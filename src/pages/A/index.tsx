@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import axios from 'axios'
+import React from 'react'
 
-export default () => {
- const [dataSource, setDataSource] = useState<any[]>([])
+
+export interface ABCProps {
+
+}
+
+type Model = React.FC<ABCProps>
+
+const ABC: Model = ({ ...props }) => {
 
  return (
-  <div>
-   <header></header>
-   <aside></aside>
-   <main></main>
-  </div>
+  <section>
+
+  </section>
  )
 }
 
+export default React.memo<Model>(ABC)

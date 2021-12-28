@@ -50,8 +50,9 @@ const Book: React.FC = () => {
     onAdd={_addBook}
     queryProps={{
      request: _queryBooks,
-     pageSize: 100,
+     pageSize: 10,
     }}
+    onUpdate={_updateBook}
     columns={_columns}
     onRemove={_removeBooks}
    />
@@ -79,3 +80,13 @@ const _removeBooks = (ids: number[]) => request({
  url: '/api/book/remove',
  data: ids,
 })
+
+const _updateBook = (data: IBook, oldData: IBook) => request({
+ method: 'POST',
+ url: '/api/book/update',
+ data: {
+  id: oldData.id,
+  ...data as any,
+ },
+}).then(console.log)
+

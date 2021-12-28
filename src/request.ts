@@ -5,8 +5,12 @@ const instance = axios.create()
 
 instance.interceptors.response.use(
  (response) => {
-  (response as any).message ?? message.info(message);
-  return response.data
+  const data = response.data
+  const { success, message: msg } = data
+
+  msg && message[success ? 'info' : 'error'](msg)
+  
+  return data.data
  }
 )
 

@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useMemo } from 'react'
-import { BrowserRouter, Route } from 'react-router-dom'
+import { Menu } from 'antd'
+import { BrowserRouter, Route, useHistory } from 'react-router-dom'
 import routerConfig from '@@/router'
 import type { Router } from '@@/router'
 
@@ -26,6 +27,7 @@ export default () => {
  return (
   <Suspense fallback={<div>loading...</div>} >
    <BrowserRouter>
+    <HeaderMenu routerConf={routerConfig} />
     {
      routerJSX
     }
@@ -33,3 +35,21 @@ export default () => {
   </Suspense>
  )
 }
+
+
+const HeaderMenu = ({ routerConf }) => {
+ const history = useHistory()
+ return (
+  <ul>
+   {
+    routerConf.map(rc => (
+     <li onClick={() => history.push(rc.path)} key={rc.path}>
+      {rc.path}
+     </li>
+    ))
+   }
+  </ul>
+ )
+}
+
+

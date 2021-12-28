@@ -9,19 +9,14 @@ export interface Router {
 const routers: Router[] = [
  {
   name: '首页',
-  path: '/',
-  component: '/Book',
+  path: '/Book',
+  component: '/Book', 
  },
  {
-  name: '页面A',
-  path: '/A',
-  component: '/A',
+  name: '分类',
+  path: '/cagegory',
+  component: '/Category',
  },
- {
-  name: '页面B',
-  path: '/B',
-  component: '/B',
- }
 ]
 
 export default routers
