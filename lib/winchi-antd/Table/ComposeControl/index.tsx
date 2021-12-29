@@ -15,12 +15,12 @@ type Model = React.FC<ComposTableProps>;
 
 const _controlProps: ComposTableProps['controlProps'] = {
   refresh: true,
-  density: true,
+  density: false,
   setting: false,
 };
 
 const ComposeControl_: Model = ({ children, controlProps, ...props_ }) => {
-  if (!controlProps) return children?.(props_);
+  if (!controlProps || controlProps.disable) return children?.(props_);
 
   const {
     wcConfig: { queryProps: defaultQueryProps = Wc.obj, size = 'middle' },
@@ -73,10 +73,10 @@ const ComposeControl_: Model = ({ children, controlProps, ...props_ }) => {
   const rowSelection: ComposTableProps['rowSelection'] =
     rowSelection_ !== false
       ? {
-        selectedRowKeys,
-        ...rowSelection_,
-        onChange: effectSelectedRows,
-      }
+          selectedRowKeys,
+          ...rowSelection_,
+          onChange: effectSelectedRows,
+        }
       : undefined;
 
   const columnHeightMenuJSX = (
@@ -121,36 +121,30 @@ const ComposeControl_: Model = ({ children, controlProps, ...props_ }) => {
         ))}
       </main>
 
-      {
-        refresh === false ? null : loading ? (
-          <LoadingOutlined />
-        ) : (
-          <Tooltip title="刷新">
-            <RedoOutlined rotate={-90} onClick={refreshTable} className={styles.pointer} />
-          </Tooltip>
-        )
-      }
+      {refresh === false ? null : loading ? (
+        <LoadingOutlined />
+      ) : (
+        <Tooltip title="刷新">
+          <RedoOutlined rotate={-90} onClick={refreshTable} className={styles.pointer} />
+        </Tooltip>
+      )}
 
-      {
-        density === false ? null : (
-          <Tooltip title="密度">
-            <Dropdown overlay={columnHeightMenuJSX} trigger={['click']}>
-              <ColumnHeightOutlined className={styles.pointer} />
-            </Dropdown>
-          </Tooltip>
-        )
-      }
+      {density === false ? null : (
+        <Tooltip title="密度">
+          <Dropdown overlay={columnHeightMenuJSX} trigger={['click']}>
+            <ColumnHeightOutlined className={styles.pointer} />
+          </Dropdown>
+        </Tooltip>
+      )}
 
-      {
-        setting === false ? null : (
-          <Tooltip title="列设置">
-            <Dropdown overlay={columnsSettingJSX} trigger={['click']}>
-              <SettingOutlined className={styles.pointer} />
-            </Dropdown>
-          </Tooltip>
-        )
-      }
-    </header >
+      {setting === false ? null : (
+        <Tooltip title="列设置">
+          <Dropdown overlay={columnsSettingJSX} trigger={['click']}>
+            <SettingOutlined className={styles.pointer} />
+          </Dropdown>
+        </Tooltip>
+      )}
+    </header>
   );
 
   const renderProps: ComposTableProps = {

@@ -21,7 +21,7 @@ export interface ComposeType<T extends AO = AO> {
     | ButtonProps
     | React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
   );
-  /** 与Columns.renderValue一样使用，优先级高 */
+  /** 与Columns.renderValue一样使用，优先级高于Columns.renderValue */
   renderValue?: Columns['renderValue'];
 }
 
@@ -30,7 +30,7 @@ export type TableTypeOfFunc<T = any> = AF<
   TableTypeOfString | (Omit<ComposeType, 'type'> & { type: TableTypeOfString })
 >;
 
-export type TableTypeOfString = 'default' | 'alias' | 'images' | 'txt' | 'download';
+export type TableTypeOfString = 'default' | 'alias' | 'images' | 'txt' | 'download' | 'link';
 
 export type TableType<T = any> = TableTypeOfString | ComposeType<T> | TableTypeOfFunc<T>;
 
@@ -60,9 +60,13 @@ const ComposeType_: Model = ({ columns: columns_ = Wc.arr, children, typeProps, 
   return children?.(childrenProps);
 };
 
-const _processTypeMap: Record<TableTypeOfString, AF<[AO, { column: Columns; alias: AO }]>> = {
+const _typeMap: Record<TableTypeOfString, AF<[AO, { column: Columns; alias: AO }]>> = {
   txt(props: AO) {
-    return (d) => <span {...props}>{d}</span>;
+    return (d) => (
+      <span {...props} className={`${styles.txt} ${props.className ?? ''}`}>
+        {d}
+      </span>
+    );
   },
   alias(props, { column }) {
     return (d) => {
@@ -91,43 +95,58 @@ const _processTypeMap: Record<TableTypeOfString, AF<[AO, { column: Columns; alia
   default() {
     return (d) => d;
   },
+  link(...rest) {
+    return (d) => {
+      return (
+        <a href={d} target="_blank" {...rest}>
+          {d}
+        </a>
+      );
+    };
+  },
 };
 
-const _propsTypeMap = R.curry((map: typeof _processTypeMap, column: Columns, alias: AO) => ({
-  ...column,
-  render(d, record, index) {
-    const types = column.tableType;
-    const fns = (Array.isArray(types) ? types : [types]).map((type_) => (node, data, idx) => {
-      let type = type_;
-      while (typeof type === 'function') {
-        type = type(node, data, idx);
+const _propsTypeMap = R.curry((map: typeof _typeMap, column: Columns, alias: AO) =>
+  column.tableType
+    ? {
+        ...column,
+        render(d, record, index) {
+          const types = column.tableType;
+          const fns = (Array.isArray(types) ? types : [types]).map((type_) => (node, data, idx) => {
+            let type = type_;
+            while (typeof type === 'function') {
+              type = type(node, data, idx);
+            }
+            const { type: typeKey, getProps, renderValue } = (Wc.isObj(type)
+              ? type
+              : { type }) as ComposeType;
+
+            const value = renderValue ? renderValue(node, data) : node;
+
+            return (
+              map[typeKey as string]?.(getProps?.(value, data) || Wc.obj, { column, alias })?.(
+                value,
+                data,
+                index,
+              ) ?? node
+            );
+          });
+
+          const node = fns.reduceRight((resultNode, f) => f(resultNode, record, index), d);
+          return column.render ? column.render(node, record, index) : node;
+        },
       }
-      const { type: typeKey, getProps, renderValue } = (Wc.isObj(type)
-        ? type
-        : { type }) as ComposeType;
-      const value = renderValue ? renderValue(node, data) : node;
-
-      const c =
-        map[typeKey as string]?.(getProps?.(value, data) || Wc.obj, { column, alias })?.(
-          value,
-          data,
-          index,
-        ) ?? node;
-      return c;
-    });
-
-    const node = fns.reduceRight((resultNode, f) => f(resultNode, record, index), d);
-    return column.render ? column.render(node, record, index) : node;
-  },
-}));
+    : column,
+);
 
 /** renderValue处理 */
 const _processrenderValue: AF = (c: Columns): Columns =>
-  c.renderValue && c.render
+  c.renderValue
     ? {
         ...c,
         render(_, record, index) {
-          return c.render!(c.renderValue!(_, record), record, index);
+          const v = c.renderValue!(_, record);
+          return c.render ? c.render(v, record, index) : v;
         },
       }
     : c;
@@ -136,7 +155,7 @@ const _processrenderValue: AF = (c: Columns): Columns =>
 const _pipeColumns = (alias: AO = Wc.obj) =>
   R.compose(
     R.map(_processrenderValue),
-    R.map((c: Columns) => (Wc.isEmpty(c.tableType) ? c : _propsTypeMap(_processTypeMap, c, alias))),
+    R.map(_propsTypeMap(_typeMap, R.__, alias)),
   );
 
 export const ComposeType = React.memo<Model>(ComposeType_);

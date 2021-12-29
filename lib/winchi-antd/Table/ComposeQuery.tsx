@@ -8,11 +8,7 @@ import { useWcConfig } from '../hooks';
 type Model = React.FC<ComposTableProps>;
 
 const ComposeQuery_: Model = ({ children, queryProps, ...props }) => {
-  const {
-     pagination: pagination_ = Wc.obj, 
-    columns = Wc.arr, 
-    rowKey = 'id',
-   } = props;
+  const { pagination: pagination_ = Wc.obj, columns = Wc.arr, rowKey = 'id' } = props;
 
   const {
     wcConfig: { queryProps: defaultQueryProps = Wc.obj, size },
@@ -108,17 +104,17 @@ const ComposeQuery_: Model = ({ children, queryProps, ...props }) => {
     pagination_ === false && !one
       ? undefined
       : {
-        hideOnSinglePage: true,
-        pageSize,
-        total: totalRef.current,
-        current: currentPage,
-        ...pagination_,
-        onChange(page, pageSize) {
-          setCurrentPage(page - 1 + startCurrent);
-          (pagination_ as any)?.onChange?.(page, pageSize);
-        },
-        size: size !== 'large' ? 'small' : 'default',
-      };
+          hideOnSinglePage: true,
+          pageSize,
+          total: totalRef.current,
+          current: currentPage,
+          ...pagination_,
+          onChange(page, pageSize) {
+            setCurrentPage(page - 1 + startCurrent);
+            (pagination_ as any)?.onChange?.(page, pageSize);
+          },
+          size: size !== 'large' ? 'small' : 'default',
+        };
 
   const childrenProps: ComposTableProps<any> = {
     columns,

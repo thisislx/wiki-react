@@ -78,7 +78,6 @@ const WcForm_: Model = ({
   const flatColumnsRef = useRef<Columns[]>(Wc.arr);
   const formRef = useRef<FormRef>(null);
   const isResetFormEffect = useRef<boolean>(true);
-
   useEffect(() => {
     const action: Partial<FormRef> = {
       ...(formRef.current || Wc.obj),
@@ -142,7 +141,7 @@ const WcForm_: Model = ({
 
   const submitHandle = Wc.asyncCompose(async () => {
     const vs = flatColumnsRef.current.reduce((r, c) => {
-      const key = c.dataIndex + '';
+      const key = c.dataIndex;
       if (typeof c.formResult === 'function') r[key] = c.formResult(r[key], r);
       c.formResult === false && Reflect.deleteProperty(r, key);
       return r;
@@ -172,7 +171,7 @@ const WcForm_: Model = ({
 
   const formItemJSX = columns.map((cc, index) =>
     cc.map((c: Columns) => (
-      <ResolveChidren key={`${c.dataIndex}`} {...c} hide={index !== currentStep} />
+      <ResolveChidren key={c.dataIndex.toString()} {...c} hide={index !== currentStep} />
     )),
   );
   const footerJSX = columns[currentStep]?.length ? (
@@ -245,7 +244,7 @@ export default WcForm;
 const _computeinitialValues = R.curry((columns: Columns[], values: AO) => ({
   ...values,
   ...columns.reduce((r, c) => {
-    const dataIndex = c.dataIndex + '';
+    const dataIndex = c.dataIndex.toString();
     const dataIndexValue = r[dataIndex] ?? c.initialValue;
     const newR = {
       ...r,

@@ -62,7 +62,7 @@ var mini_css_extract_plugin_1 = __importDefault(require("mini-css-extract-plugin
 var css_minimizer_webpack_plugin_1 = __importDefault(require("css-minimizer-webpack-plugin"));
 var terser_webpack_plugin_1 = __importDefault(require("terser-webpack-plugin"));
 var _nodeModulesReg = /node_modules/;
-var _getName = function (isProd) {
+var _getName = function (isProd) { 
     if (isProd === void 0) { isProd = false; }
     return "[name]_" + (isProd ? '[contenthash]' : '');
 };
@@ -78,7 +78,7 @@ var _getCssRules = function (isProd) { return ({
         function (_a) {
             var _b = _a === void 0 ? {} : _a, _c = _b.resource, resource = _c === void 0 ? '' : _c;
             var isNodeModules = _nodeModulesReg.test(resource);
-            console.log(resource, isNodeModules);
+            console.log(resource, isNodeModules); 
             return {
                 loader: 'css-loader',
                 ident: 'css-loader',
@@ -210,7 +210,7 @@ var getDevConfig = function (port_) {
                                 clientLogLevel: 'silent',
                                 proxy: {
                                     '/api': {
-                                        target: 'http://localhost:9999',
+                                        target: 'http://localhost:12345',
                                         changeOrigin: true
                                     }
                                 }

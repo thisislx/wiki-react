@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import { AO, AF, GetKey } from './index';
-import { isObj } from './isWhat';
+import { isExtendObj, isObj } from './isWhat';
 
 export const prop: AF = R.curry((key: GetKey, o: AO) =>
   typeof key === 'function' ? key(o) : o?.[key as any],
@@ -10,12 +10,19 @@ export const deepProp = R.curry((keys: GetKey[], o: AO) =>
   keys.reduce((cur, k) => prop(k, cur), o),
 );
 
-export const rename = R.curry((key, renameKey, obj) => {
-  const val = obj[key];
-  const newO = R.assoc(renameKey, val)(obj);
-  Reflect.deleteProperty(newO, key);
-  return newO;
-});
+
+/** 重塑对象的某个属性的值，这个值受限于对象或者数组(deep) */
+export const propJudgeObject = R.curry(
+  (key: string, handle: AF<[AO], any>, target: AO) => isExtendObj(target[key]) ? ({
+    ...target,
+    [key]: Array.isArray(target[key])
+      ? target[key].map(R.compose(
+        handle,
+        propJudgeObject(key, handle),
+      ))
+      : handle(target[key])
+  }) : target
+)
 
 /**
  * 转换数字下标的Record
@@ -57,3 +64,20 @@ export const mergeDeepLeft = mergeDeepWith(_mergeLeftHelper);
  */
 export const mergeRight = mergeDeepWith(_mergeRightHelper);
 export const mergeDeepRight = mergeDeepWith(_mergeRightHelper);
+
+
+/** 更换对象的属性名字 */
+export const propRename = R.curry(
+  (map: AO, target: AO) => Reflect.ownKeys(target).reduce((result, key: any) => ({
+    ...result,
+    [map[key] ?? key]: Reflect.get(target, key),
+  }), {} as AO)
+)
+
+/** propRename的deep版本，如处理path = children */
+export const deepPropRename = R.curry(
+  (path: string, map: AO, target: AO) => R.compose(
+    propJudgeObject(path, propRename(map)),
+    propRename(map)
+  )(target)
+)

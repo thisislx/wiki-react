@@ -25,7 +25,7 @@ export interface ColumnFormListProps
 export type ColumnEnum = Record<string | number, React.ReactNode> | OptionProps[];
 
 export interface Columns<T extends AO = any> extends ColumnProps<T> {
-  dataIndex: keyof(T)
+  dataIndex?: keyof T;
   /** @description 开启过滤 */
   filter?: {
     /** 覆盖../formType */

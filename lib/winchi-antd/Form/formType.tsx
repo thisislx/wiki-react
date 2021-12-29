@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import type { InputProps, InputNumberProps, RadioProps, SelectProps, DatePickerProps } from 'antd';
+import {
+  InputProps,
+  InputNumberProps,
+  RadioProps,
+  SelectProps,
+  DatePickerProps,
+  TimePickerProps,
+  TimePicker,
+} from 'antd';
 import { Radio, Input, InputNumber, Select, DatePicker } from 'antd';
 import Wc from 'winchi';
 import { composeComponent } from 'winchi/jsx';
@@ -8,10 +16,11 @@ import { WcFormContext } from './';
 import { defaultRender } from '../utils';
 import type { ComposeFormProps } from '../Table';
 import { ComposeHistory, ComposeQuery, ComposeForm } from '../Table';
-import WcUpload, { WcUploadProps } from './Upload';
+import WcUpload, { WcUploadProps } from '../Upload';
 import WcFormList from './List';
-import WcTreeSelect, { wCTreeSelectProps } from './TreeSelect';
-import WcTree, { WcTreeProps } from './Tree';
+import WcTreeSelect, { WcTreeSelectProps } from './TreeSelect';
+import WcTree, { WcTreeProps } from '../Tree';
+import Cascader, {WcCascadeProps} from '../Cascader'
 
 const { TextArea } = Input;
 
@@ -30,7 +39,10 @@ export type FormType =
   | 'treeSelect'
   | 'password'
   | 'datePicker'
-  | 'dateRangePicker';
+  | 'dateRangePicker'
+  | 'timePicker'
+  | 'cascader';
+
 
 export type FormProps =
   | InputProps
@@ -40,8 +52,10 @@ export type FormProps =
   | ComposeFormProps
   | WcUploadProps
   | WcTreeProps
-  | wCTreeSelectProps
-  | DatePickerProps;
+  | WcTreeSelectProps
+  | DatePickerProps
+  | TimePickerProps
+  | WcCascadeProps
 
 const mapFC: Record<FormType, AF> = {
   text(props: any) {
@@ -106,6 +120,12 @@ const mapFC: Record<FormType, AF> = {
   dateRangePicker(props) {
     return <FormComponentWrap {...props} Component={DatePicker.RangePicker} />;
   },
+  timePicker(props) {
+    return <FormComponentWrap {...props} Component={TimePicker} />;
+  },
+  cascader(props) {
+    return <FormComponentWrap {...props} Component={Cascader} />;
+  }
 };
 
 export const propEventValue = (e?) => e?.target?.value;
@@ -132,7 +152,7 @@ const FormComponentWrap: React.FC<FormComponentWrapProps> = ({
   const { initialValues } = useContext(WcFormContext);
 
   useEffect(() => {
-    const initialValue = initialValues[column.dataIndex + ''];
+    const initialValue = initialValues[column.dataIndex!.toString()];
     if (initialValue === value) return;
     setValue(initialValue);
     onChange(initialValue);

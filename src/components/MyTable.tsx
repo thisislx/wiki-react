@@ -27,6 +27,7 @@ export interface FormPageProps<T extends AO = any>
   tabsWithColumns?: Record<string, Columns[]>;
   composeRequest?(f: AF, data: AO, oldData?: AO): any;
   children?: React.ReactNode;
+  request?(...p: any[]): Promise<any>;
 }
 
 const _composeTable = composeComponent(
@@ -56,6 +57,7 @@ export const FormPage: React.FC<FormPageProps> = ({
   columns: columns_ = Wc.arr,
   children,
   queryProps = Wc.obj,
+  request,
   ...props
 }) => {
   const [columns, setColumns] = useState<Columns[]>(columns_);
@@ -64,9 +66,9 @@ export const FormPage: React.FC<FormPageProps> = ({
   const lastTabKeyRef = useRef<string>();
 
   useEffect(() => {
-    const c = lastTabKeyRef.current && tabsWithColumns?.[lastTabKeyRef.current];
+    const c = lastTabKeyRef.current && tabsWithColumns?.[lastTabKeyRef.current] || columns_;
     c && setColumns(c);
-  }, [tabsWithColumns]);
+  }, [tabsWithColumns, columns_]);
 
   const publicColumns = useMemo<Columns[]>(
     () => [
@@ -76,7 +78,7 @@ export const FormPage: React.FC<FormPageProps> = ({
         fixed: 'right',
         xIndex: 99,
         width: handlesWidth,
-        hideTable: !onUpdate,
+        hideTable: !onUpdate && !handlesNode,
         render(_, d) {
           return (
             <>
@@ -136,7 +138,7 @@ export const FormPage: React.FC<FormPageProps> = ({
         onSubmit={Wc.func}
         pageRef={[pageRef, ...(Array.isArray(pageRef_) ? pageRef_ : [pageRef_])]}
         composeTable={_composeTable}
-        queryProps={{ composeRequest, ...queryProps }}
+        queryProps={{ request, ...queryProps, composeRequest }}
         typeProps={Wc.obj}
         historyProps={{
           getFeature(params) {

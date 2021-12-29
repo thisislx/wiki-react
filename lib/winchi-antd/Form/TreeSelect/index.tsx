@@ -6,13 +6,13 @@ import styles from './index.less';
 
 export type TreeData = Exclude<TreeSelectProps<any>['treeData'], void>;
 
-export interface wCTreeSelectProps
+export interface WcTreeSelectProps
   extends Omit<TreeSelectProps<any>, 'treeData' | 'onChange'>,
     FormComponentProps {
   treeData: TreeData | AF<any[], Promise<TreeData>> | void;
 }
 
-type Model = React.FC<wCTreeSelectProps>;
+type Model = React.FC<WcTreeSelectProps>;
 
 const WcTreeSelect_: Model = ({
   value: value_,

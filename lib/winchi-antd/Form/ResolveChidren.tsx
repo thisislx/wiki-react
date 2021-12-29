@@ -3,7 +3,7 @@ import Wc from 'winchi';
 import WcFormItem from './Item';
 import WcFormList from './List';
 import type { FormComponentWrapProps } from './formType';
-import type { Columns } from '../d'
+import type { Columns } from '../d';
 
 export interface WcResolveChidrenProps extends Partial<FormComponentWrapProps>, Columns {
   hide?: boolean;
@@ -12,25 +12,19 @@ export interface WcResolveChidrenProps extends Partial<FormComponentWrapProps>, 
 
 type Model = React.FC<WcResolveChidrenProps>;
 
-const ResolveChidren: Model = ({
-  formProps: formProps_ = Wc.obj,
-  hide,
-  hideForm,
-  ...props
-}) => {
-
+const ResolveChidren: Model = ({ formProps: formProps_ = Wc.obj, hide, hideForm, ...props }) => {
   const formProps = formProps_.options
     ? formProps_
     : {
-      ...formProps_,
-      options: props.enum && (Array.isArray(props.enum) ? props.enum : _objToLabel(props.enum)),
-    };
+        options: props.enum && (Array.isArray(props.enum) ? props.enum : _objToLabel(props.enum)),
+        ...formProps_,
+      };
 
   const commonProps = {
     ...props,
     hide: hide || hideForm,
     formProps,
-  }
+  };
 
   return props.formType === 'list' ? (
     <WcFormList {...commonProps} />

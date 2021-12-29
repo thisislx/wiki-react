@@ -66,6 +66,8 @@ export interface ComposTableProps<T extends AO = any>
     Rights?: React.ReactNode[];
     /** 删除位置 所在的位置 */
     renderContent?: (rows: T[]) => React.ReactNode;
+    /** 关闭control */
+    disable?: boolean;
   } & DivProps;
 
   menuProps?: {

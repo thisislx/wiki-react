@@ -1,9 +1,18 @@
 import React from 'react'
 import MyTable, { Columns } from '@/components/MyTable'
+import * as R from 'ramda'
+import Wc from 'winchi'
 import request from '@/request'
+import { queryCategorys } from '../Category'
 import type { IBook } from './data.d'
-import styles from './index.less'
-import { Card } from 'antd'
+
+const _queryCategorys: AF = Wc.asyncCompose(
+ R.map(Wc.deepPropRename('children', {
+  name: 'label',
+  id: 'value',
+ })),
+ queryCategorys,
+)
 
 const _columns: Columns<IBook>[] = [
  {
@@ -11,16 +20,24 @@ const _columns: Columns<IBook>[] = [
   dataIndex: 'name',
  },
  {
+  title: '描述',
+  dataIndex: 'description',
+ },
+ {
   title: '类型1',
   dataIndex: 'category1',
+  formType: 'cascader',
+  formProps: {
+   options: _queryCategorys,
+  },
  },
  {
   title: '类型2',
   dataIndex: 'category2',
- },
- {
-  title: '描述',
-  dataIndex: 'description',
+  formType: 'cascader',
+  formProps: {
+   options: _queryCategorys,
+  },
  },
  {
   title: '文档数',
@@ -37,37 +54,32 @@ const _columns: Columns<IBook>[] = [
  {
   title: '更新时间',
   dataIndex: 'updateTime',
+  hideForm: true,
  }
 ]
 
 const Book: React.FC = () => {
  return (
-  <Card className={styles.wrap}>
-   <header>
-    hello this is book
-   </header>
-   <MyTable
-    onAdd={_addBook}
-    queryProps={{
-     request: _queryBooks,
-     pageSize: 10,
-    }}
-    onUpdate={_updateBook}
-    columns={_columns}
-    onRemove={_removeBooks}
-   />
-  </Card>
+  <MyTable
+   onAdd={_addBook}
+   queryProps={{
+    request: _queryBooks,
+    pageSize: 10,
+   }}
+   onUpdate={_updateBook}
+   columns={_columns}
+   onRemove={_removeBooks}
+  />
  )
 }
 
 export default React.memo<React.FC>(Book)
 
-
 const _queryBooks = (params: QueryPagination) => request({
  method: 'GET',
  url: '/api/book/list',
  params,
-}).then(d => d.data)
+})
 
 const _addBook = (book: IBook) => request({
  method: 'POST',
@@ -89,4 +101,3 @@ const _updateBook = (data: IBook, oldData: IBook) => request({
   ...data as any,
  },
 }).then(console.log)
-

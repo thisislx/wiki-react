@@ -1,0 +1,12 @@
+.left {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  height: 63vh;
+
+  > * {
+    &:last-child {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+}

@@ -165,7 +165,7 @@ const getDevConfig = async (port_ = 1234): Promise<WebpackConfig> => {
       clientLogLevel: 'silent',
       proxy: {
         '/api': {
-          target: 'http://localhost:9999',
+          target: 'http://localhost:12345',
           changeOrigin: true,
           // pathRewrite: { '^/api': '/' }
         }

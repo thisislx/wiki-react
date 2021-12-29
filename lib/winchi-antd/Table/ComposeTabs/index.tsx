@@ -3,6 +3,7 @@ import Wc from 'winchi';
 import { useFirstChange, useWcConfig } from '../../hooks';
 import type { ComposTableProps, TableActionRef } from '../d.d';
 import WcTabs, { WcTabsOption } from '../../Tabs';
+import styles from './index.less';
 
 type Model = React.FC<ComposTableProps>;
 
@@ -35,7 +36,8 @@ const ComposeTabs_: Model = ({ children, tabsProps, ...props }) => {
     requestKey: requestKey_ = _tabsProps.requestKey,
     preventLoadReload,
     preventLoadReloadKeys,
-    ...menuProps
+    tabPosition,
+    ...tabProps
   } = tabsProps ?? _tabsProps;
 
   const requestKey = requestKey_ + '';
@@ -67,21 +69,28 @@ const ComposeTabs_: Model = ({ children, tabsProps, ...props }) => {
   };
 
   return (
-    <>
+    <section className={tabPosition === 'left' ? styles.left : ''}>
       <WrapTab>
-        <WcTabs {...menuProps} options={options} onChange={tabChangeHandle} />
+        <WcTabs
+          {...tabProps}
+          options={options}
+          onChange={tabChangeHandle}
+          tabPosition={tabPosition}
+        />
       </WrapTab>
 
-      {children?.({
-        ...props,
-        queryProps: {
-          ...queryProps,
-          actionRef: [actionRef, actionRef_],
-          composeRequest,
-          preventFirtstRequest: true,
-        },
-      })}
-    </>
+      <div className="think-scroll">
+        {children?.({
+          ...props,
+          queryProps: {
+            ...queryProps,
+            actionRef: [actionRef, actionRef_],
+            composeRequest,
+            preventFirtstRequest: true,
+          },
+        })}
+      </div>
+    </section>
   );
 };
 
